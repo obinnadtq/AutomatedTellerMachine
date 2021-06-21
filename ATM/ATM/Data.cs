@@ -255,7 +255,7 @@ namespace ATM
             UpdateInFile(c);
         }
 
-        // withdraw total amount of money customer has withdrawn
+        // total amount of money customer has withdrawn
 
         public int TodaysTransactionAmount(int accNo)
         {
