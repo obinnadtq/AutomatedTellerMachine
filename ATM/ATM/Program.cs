@@ -6,8 +6,8 @@ namespace ATM
     {
         public static void Main(string[] args)
         {
-            Logic logic = new Logic();
-            logic.CreateAccount();
+            View view = new View();
+            view.LoginScreen();
         }
     }
 }

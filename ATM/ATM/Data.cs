@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ATM.Model;
+using Newtonsoft.Json;
 
 namespace ATM
 {
@@ -11,7 +13,7 @@ namespace ATM
         // appends an object to file in Json Format
         public void AddToFile<T>(T obj)
         {
-            string jsonOutput = JsonSerializer.Serialize(obj);
+            string jsonOutput = System.Text.Json.JsonSerializer.Serialize(obj);
 
             if(obj is Admin)
             {
@@ -30,7 +32,7 @@ namespace ATM
         // clears last data and save new list to file in json format
         public void SaveToFile<T>(List<T> list)
         {
-            string jsonOutput = JsonSerializer.Serialize(list[0]);
+            string jsonOutput = System.Text.Json.JsonSerializer.Serialize(list[0]);
 
             if (list[0] is Admin)
             {
@@ -52,16 +54,15 @@ namespace ATM
         public List<T> ReadFile<T>(string fileName)
         {
             List<T> list = new List<T>();
-            string filePath = Path.Combine(Environment.CurrentDirectory, fileName);
-            StreamReader streamReader = new StreamReader(filePath);
+            string FilePath = Path.Combine(Environment.CurrentDirectory, fileName);
+            StreamReader sr = new StreamReader(FilePath);
 
-            string line = string.Empty;
-
-            while((line = streamReader.ReadLine()) != null)
+            string line = String.Empty;
+            while ((line = sr.ReadLine()) != null)
             {
-                list.Add(JsonSerializer.Deserialize<T>(line));
+                list.Add(System.Text.Json.JsonSerializer.Deserialize<T>(line));
             }
-            streamReader.Close();
+            sr.Close();
 
             return list;
         }
@@ -70,7 +71,7 @@ namespace ATM
 
         public void DeleteCustomer(Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("customer.txt");
+            List<Customer> list = ReadFile<Customer>("customers.txt");
 
             foreach(Customer item in list)
             {
@@ -103,26 +104,27 @@ namespace ATM
 
         // check if an admin object is in file
 
-        public bool IsInFile(Admin user)
+        public bool IsAdminInFile(Admin user)
         {
-            List<Admin> list = ReadFile<Admin>("admins.txt");
+             List<Admin> list = ReadFile<Admin>("admins.txt");
 
-            foreach(Admin admin in list)
-            {
-                if(admin.Username == user.Username && admin.Pin == user.Pin)
+             foreach (Admin admin in list)
+             {
+                if (admin.Username == user.Username && admin.Pin == user.Pin)
                 {
-                    return true;
+                   return true;
                 }
-            }
+             }
 
-            return false;
+                return false;
+            
         }
 
         // check if an user is active
 
         public int IsUserActive(string user)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            List<Customer> list = ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
 
             foreach (Customer customer in list)
             {
@@ -143,7 +145,7 @@ namespace ATM
 
         public bool CanLogin(Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            List<Customer> list = ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
 
             foreach(Customer user in list)
             {
@@ -178,6 +180,7 @@ namespace ATM
 
         public bool IsUsernameInFile(string userName)
         {
+            
             List<Customer> list = ReadFile<Customer>("customers.txt");
 
             foreach(Customer customer in list)
@@ -190,6 +193,7 @@ namespace ATM
 
             return false;
         }
+
 
         // returns an object if given a username
 
@@ -227,16 +231,29 @@ namespace ATM
 
         public int getLastAccountNumber()
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
-
-            if(list.Count > 0)
+            if(File.Exists(Path.Combine(Environment.CurrentDirectory, "customers.txt")))
             {
-                Customer customer = list[list.Count - 1];
+                List<Customer> list = ReadFile<Customer>("customers.txt");
 
-                return customer.AccountNo;
+                if (list.Count > 0)
+                {
+                    Customer customer = list[list.Count - 1];
+
+                    return customer.AccountNo;
+                }
+
+                else
+                {
+                    return 0;
+                }
             }
+            else
+            {
+                return 0;
+            }
+            
 
-            return 0;
+            
         }
 
         // deduct amount from balance of an account and update in file

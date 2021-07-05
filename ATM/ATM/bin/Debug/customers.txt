@@ -1,0 +1,9 @@
+{"Username":"obaino","Pin":"12345","Name":"Obinna","AccountType":"Current","Balance":200,"Status":"Active","AccountNo":1}
+{"Username":"tof","Pin":"34556","Name":"Tofunmi","AccountType":"Savings","Balance":2000,"Status":"Active","AccountNo":2}
+{"Username":"obaino","Pin":"12345","Name":"Obinna","AccountType":"Current","Balance":200,"Status":"Active","AccountNo":1}
+{"Username":"dtq","Pin":"98986","Name":"DTQ","AccountType":"Savings","Balance":20,"Status":"Active","AccountNo":2}
+{"Username":"Joo","Pin":"23445","Name":"John","AccountType":"Current","Balance":2009,"Status":"Active","AccountNo":3}
+{"Username":"obaino","Pin":"12345","Name":"Obinna","AccountType":"Current","Balance":200,"Status":"Active","AccountNo":1}
+{"Username":"tof","Pin":"34556","Name":"Tofunmi","AccountType":"Savings","Balance":2000,"Status":"Active","AccountNo":2}
+{"Username":"obaino","Pin":"12345","Name":"Obinna","AccountType":"Current","Balance":200,"Status":"Active","AccountNo":1}
+{"Username":"dtq","Pin":"98986","Name":"DTQ","AccountType":"Savings","Balance":20,"Status":"Active","AccountNo":2}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using ATM.Model;
 
 namespace ATM
@@ -11,7 +12,7 @@ namespace ATM
         public bool VerifyLogin(Admin admin)
         {
             Data adminData = new Data();
-            return adminData.IsInFile(admin);
+            return adminData.IsAdminInFile(admin);
         }
 
         // method to verify if username is in file
@@ -70,34 +71,7 @@ namespace ATM
             }
             return true;
         }
-        // Encryption Method
-        // For alphabets we swap A with Z, B with Y and so on.
-        // A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-        // Z Y X W V U T S R Q P O N M L K J I H G F E D C B A
-        // For Number we have
-        // 0123456789
-        // 9876543210
-
-        public string EncryptionDecryption(string userName)
-        {
-            string output = "";
-            foreach(char c in userName)
-            {
-                if(c >= 'A' && c <= 'Z')
-                {
-                    output += Convert.ToChar(('Z' - (c - 'A')));
-                }
-                else if(c >= 'a' && c <= 'z')
-                {
-                    output += Convert.ToChar(('z' - (c - 'a')));
-                }
-                else if (c >= '0' && c <= '9')
-                {
-                    output += Convert.ToChar(9 - char.GetNumericValue(c));
-                }
-            }
-            return output;
-        }
+        
 
         // Disables an account
 
@@ -112,91 +86,33 @@ namespace ATM
 
         // creates an account
 
-        public void CreateAccount()
+        public void  CreateAccount()
         {
+            // TODO: Authentication for account creation.
             Data data = new Data();
             Customer customer = new Customer();
             Console.WriteLine("-----Creating New Account-------");
             Console.WriteLine("Please enter User Details");
 
-        getUsername:
-            {
-                Console.Write("Username: ");
-                string userName = Console.ReadLine();
+            Console.Write("Username: ");
+            string userName = Console.ReadLine();
+            customer.Username = userName;
+                
 
-                if(userName=="" || !IsValidUsername(userName))
-                {
-                    Console.WriteLine("Enter valid Username (Username can only contain A-Z, a-z & 0-9)");
-                    goto getUsername;
-                }
-
-                customer.Username = EncryptionDecryption(userName);
-
-                if (data.IsUsernameInFile(userName))
-                {
-                    Console.WriteLine("Username already exists!! Enter again.");
-                    goto getUsername;
-                }
-            }
-
-        getPin:
-            {
-                Console.WriteLine("5-digit pin: ");
-                string pin = Console.ReadLine();
-
-                if (!IsPinValid(pin))
-                {
-                    Console.WriteLine("Enter valid Pin (Pin is 5-digit & can only contain 0-9)");
-                    goto getPin;
-                }
-
-                customer.Pin = EncryptionDecryption(pin);
-            }
+            Console.WriteLine("5-digit pin: ");
+            customer.Pin = Console.ReadLine();
 
             Console.WriteLine("Holder's name: ");
-            string name = Console.ReadLine();
-            if(name != ""|| name != " ")
-            {
-                customer.Name = name;
-            }
+            customer.Name = Console.ReadLine();
 
-        getAccountType:
-            {
-                Console.WriteLine("Account Type (Current/Savings): ");
-                customer.AccountType = Console.ReadLine();
+            Console.WriteLine("Account Type (Current/Savings): ");
+            customer.AccountType = Console.ReadLine();
 
-                if (!(customer.AccountType == "Savings" || customer.AccountType == "Current"))
-                {
-                    Console.WriteLine("Wrong Input. Enter \"Savings\" & \"Current\"");
-                    goto getAccountType;
+            Console.WriteLine("Starting balance: ");
+            customer.Balance = Convert.ToInt32(Console.ReadLine());
 
-                }
-            }
-        // get starting balance
-        getBalance:
-            {
-                try
-                {
-                    Console.WriteLine("Starting balance: ");
-                    customer.Balance = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Wrong Input. Enter numbers only.");
-                    goto getBalance;
-                }
-            }
-        getStatus:
-            {
-                Console.WriteLine("Status (Active/Disabled): ");
-                customer.Status = Console.ReadLine();
-
-                if (!(customer.Status == "Active" || customer.Status == "Disabled"))
-                {
-                    Console.WriteLine("Wrong Input. Enter \"Active\" & \"Disabled\"");
-                    goto getStatus;
-                }
-            }
+            Console.WriteLine("Status (Active/Disabled): ");
+            customer.Status = Console.ReadLine();
 
             customer.AccountNo = data.getLastAccountNumber() + 1;
 
@@ -233,9 +149,9 @@ namespace ATM
                         return;
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine("No account was deleted");
+                    Console.WriteLine(e.Message);
                 }
             }
             else
@@ -259,7 +175,7 @@ namespace ATM
             getUsername:
                 {
                     string userName = GetUserName();
-                    customer.Username = EncryptionDecryption(userName);
+                    customer.Username = userName;
 
                     if (data.IsUsernameInFile(customer.Username))
                     {
@@ -270,10 +186,6 @@ namespace ATM
                 }
 
                 string pin = GetPin();
-                if (!string.IsNullOrEmpty(pin))
-                {
-                    customer.Pin = EncryptionDecryption(pin);
-                }
 
                 string name = GetName();
                 if(name != null)
@@ -327,8 +239,7 @@ namespace ATM
                 }
             }
 
-            string uname = GetUserName();
-            customer.Username = EncryptionDecryption(uname);
+            customer.Username = GetUserName();
 
             string name = GetName();
             customer.Name = name;
@@ -337,7 +248,7 @@ namespace ATM
             customer.AccountType = type;
 
             Data data = new Data();
-            List<Customer> list = data.ReadFile<Customer>("customers.txt");
+            List<Customer> list = data.ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
 
             List<Customer> outList = new List<Customer>();
 
@@ -366,7 +277,7 @@ namespace ATM
                 foreach(Customer c1 in outList)
                 {
                     Console.WriteLine(Convert.ToString(c1.AccountNo).PadRight(12)
-                        + EncryptionDecryption(c1.Username).PadRight(10)
+                        + c1.Username.PadRight(10)
                         + c1.Name.PadRight(15)
                         + c1.AccountType.PadRight(9));
                 }

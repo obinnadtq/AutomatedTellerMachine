@@ -59,6 +59,9 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Logic.cs" />
+    <Compile Include="View.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
