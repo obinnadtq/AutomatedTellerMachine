@@ -248,7 +248,7 @@ namespace ATM
             customer.AccountType = type;
 
             Data data = new Data();
-            List<Customer> list = data.ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
+            List<Customer> list = data.ReadFile<Customer>("customers.txt", customer);
 
             List<Customer> outList = new List<Customer>();
 

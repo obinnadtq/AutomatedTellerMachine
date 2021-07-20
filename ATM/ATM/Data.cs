@@ -40,7 +40,7 @@ namespace ATM
             }
             else if (list[0] is Customer)
             {
-                File.AppendAllText("customers.txt", jsonOutput + Environment.NewLine);
+                File.WriteAllText("customers.txt", jsonOutput + Environment.NewLine);
             }
 
             for(int i = 1; i < list.Count; i++)
@@ -51,27 +51,47 @@ namespace ATM
 
         // returns a list of objects from file
 
-        public List<T> ReadFile<T>(string fileName)
+        public List<T> ReadFile<T>(string fileName, T obj)
         {
             List<T> list = new List<T>();
-            string FilePath = Path.Combine(Environment.CurrentDirectory, fileName);
-            StreamReader sr = new StreamReader(FilePath);
+            string FilePath = Path.Combine(Environment.CurrentDirectory, fileName); ;
+            if (File.Exists(fileName))
+            { 
+                StreamReader sr = new StreamReader(FilePath);
 
-            string line = String.Empty;
-            while ((line = sr.ReadLine()) != null)
-            {
-                list.Add(System.Text.Json.JsonSerializer.Deserialize<T>(line));
+                string line = String.Empty;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    list.Add(System.Text.Json.JsonSerializer.Deserialize<T>(line));
+                }
+                sr.Close();
+
+                return list;
             }
-            sr.Close();
 
-            return list;
+            else
+            {
+                string data = System.Text.Json.JsonSerializer.Serialize(obj);
+                File.WriteAllText(fileName, data + Environment.NewLine);
+                StreamReader sr = new StreamReader(FilePath);
+
+                string line = String.Empty;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    list.Add(System.Text.Json.JsonSerializer.Deserialize<T>(line));
+                }
+                sr.Close();
+
+                return list;
+            }
+            
         }
 
         // deletes a customer object from file
 
         public void DeleteCustomer(Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            List<Customer> list = ReadFile<Customer>("customers.txt", customer);
 
             foreach(Customer item in list)
             {
@@ -82,14 +102,17 @@ namespace ATM
                 }
             }
 
-            SaveToFile<Customer>(list);
+                SaveToFile<Customer>(list);
+       
+
+            
         }
 
         // updates a customer object in file
 
         public void UpdateInFile(Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            List<Customer> list = ReadFile<Customer>("customers.txt", customer);
 
             for(int i = 0; i < list.Count; i++)
             {
@@ -106,7 +129,7 @@ namespace ATM
 
         public bool IsAdminInFile(Admin user)
         {
-             List<Admin> list = ReadFile<Admin>("admins.txt");
+             List<Admin> list = ReadFile<Admin>("admins.txt", user);
 
              foreach (Admin admin in list)
              {
@@ -124,7 +147,8 @@ namespace ATM
 
         public int IsUserActive(string user)
         {
-            List<Customer> list = ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
+            Customer customer1 = new Customer();
+            List<Customer> list = ReadFile<Customer>("customers.txt", customer1);
 
             foreach (Customer customer in list)
             {
@@ -145,7 +169,7 @@ namespace ATM
 
         public bool CanLogin(Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("/Users/obinnaisiwekpeni/Desktop/customers.txt");
+            List<Customer> list = ReadFile<Customer>("customers.txt", customer);
 
             foreach(Customer user in list)
             {
@@ -162,7 +186,8 @@ namespace ATM
 
         public bool IsAccountInFile(int accNo, out Customer customer)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            Customer c = new Customer();
+            List<Customer> list = ReadFile<Customer>("customers.txt", c);
 
             foreach(Customer user in list)
             {
@@ -180,8 +205,8 @@ namespace ATM
 
         public bool IsUsernameInFile(string userName)
         {
-            
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            Customer c = new Customer();
+            List<Customer> list = ReadFile<Customer>("customers.txt", c);
 
             foreach(Customer customer in list)
             {
@@ -199,7 +224,8 @@ namespace ATM
 
         public Customer GetCustomer(string userName)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            Customer c = new Customer();
+            List<Customer> list = ReadFile<Customer>("customers.txt", c);
 
             foreach(Customer customer in list)
             {
@@ -215,7 +241,8 @@ namespace ATM
 
         public Customer GetCustomer(int accountNo)
         {
-            List<Customer> list = ReadFile<Customer>("customers.txt");
+            Customer c = new Customer();
+            List<Customer> list = ReadFile<Customer>("customers.txt", c);
 
             foreach (Customer customer in list)
             {
@@ -233,7 +260,8 @@ namespace ATM
         {
             if(File.Exists(Path.Combine(Environment.CurrentDirectory, "customers.txt")))
             {
-                List<Customer> list = ReadFile<Customer>("customers.txt");
+                Customer c = new Customer();
+                List<Customer> list = ReadFile<Customer>("customers.txt", c);
 
                 if (list.Count > 0)
                 {
@@ -276,7 +304,8 @@ namespace ATM
 
         public int TodaysTransactionAmount(int accNo)
         {
-            List<Transaction> list = ReadFile<Transaction>("customers.txt");
+            Transaction c = new Transaction();
+            List<Transaction> list = ReadFile<Transaction>("customers.txt", c);
 
             int totalAmount = 0;
 
